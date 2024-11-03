@@ -1,6 +1,12 @@
 import logo from './logo.svg';
 import './App.css';
 
+const getSummary = () => {
+  // 요약 요청 기능 구현 필요
+  alert("관심 분야에 대한 뉴스와 여론 요약을 요청합니다.");
+  // API 요청 등을 통해 요약 데이터를 가져오는 로직 추가 가능
+};
+
 function App() {
   return (
     <div className="container">
