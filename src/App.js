@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './App.css';
 import { Navbar, Container, Nav } from 'react-bootstrap';
-import data from './data.js';
+import data from './pages/data.js';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
 import Detail from './pages/Detail.js';
 
@@ -45,7 +45,7 @@ function App() {
               }
             </div>
           </div></div>} />
-        <Route path="/detail" element={<Detail />} />
+        <Route path="/detail/:id" element={<Detail news_data={news_data} />} />
         <Route path="*" element={<div>Not Found</div>} />
       </Routes>
     </div>
@@ -53,12 +53,16 @@ function App() {
 }
 
 function Card(props) {
+  let navigate = useNavigate();
+
   return (
     <div className='col-md-4'>
-      <h4>{props.news_data.title}</h4>
+      <h4 onClick={() => navigate(`/detail/${props.news_data.id}`)} style={{ cursor: 'pointer' }}>
+        {props.news_data.title}
+      </h4>
       <p>{props.news_data.content}</p>
     </div>
-  )
+  );
 }
 
 export default App;
