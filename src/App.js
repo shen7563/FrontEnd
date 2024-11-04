@@ -12,7 +12,6 @@ function App() {
 
   return (
     <div className="App">
-
       <Navbar bg="dark" data-bs-theme="dark">
         <Container>
           <Navbar.Brand onClick={() => { navigate('/') }}
