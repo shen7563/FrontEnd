@@ -1,8 +1,13 @@
-function Detail() {
+import { useParams } from "react-router-dom";
+
+function Detail(props) {
+
+    let {id} = useParams();
+
     return (
         <div>
-            <h1>제목1</h1>
-            <p>주제1에 대한 요약내용</p>
+            <h1>{props.news_data[id].title}</h1>
+            <p>{props.news_data[id].content}</p>
         </div>
     )
 }
