@@ -1,48 +1,32 @@
-import logo from './logo.svg';
 import './App.css';
-
-const getSummary = () => {
-  // 요약 요청 기능 구현 필요
-  alert("관심 분야에 대한 뉴스와 여론 요약을 요청합니다.");
-  // API 요청 등을 통해 요약 데이터를 가져오는 로직 추가 가능
-};
+import {Navbar, Container, Nav} from 'react-bootstrap';
 
 function App() {
   return (
-    <div className="container">
-      <h1>뉴스 및 여론 요약 서비스</h1>
-      <div className="button-group">
-        <button>요약 요청</button>
-      </div>
-      <div className="results" id="results">
-        <h2>뉴스 요약</h2>
-        <div className="news-item">
-          <h3>뉴스 제목 1</h3>
-          <p>이곳에 뉴스 요약이 표시됩니다. 간결하고 핵심적인 내용으로 요약된 뉴스 기사입니다.</p>
-          <a href="#" target="_blank" rel="noopener noreferrer">
-            원문 보기
-          </a>
-        </div>
-        <div className="news-item">
-          <h3>뉴스 제목 2</h3>
-          <p>이곳에 뉴스 요약이 표시됩니다. 간결하고 핵심적인 내용으로 요약된 뉴스 기사입니다.</p>
-          <a href="#" target="_blank" rel="noopener noreferrer">
-            원문 보기
-          </a>
-        </div>
-
-        <h2>여론 요약</h2>
-        <div className="opinion-item">
-          <h4>긍정적인 여론</h4>
-          <p>이곳에 긍정적인 여론 요약이 표시됩니다. 예: "이번 정책은 경제에 긍정적인 영향을 미칠 것으로 예상됩니다."</p>
-        </div>
-        <div className="opinion-item">
-          <h4>부정적인 여론</h4>
-          <p>이곳에 부정적인 여론 요약이 표시됩니다. 예: "정책이 충분히 검토되지 않았고, 부정적인 결과를 초래할 수 있습니다."</p>
-        </div>
-        <div className="opinion-item">
-          <h4>중립적인 여론</h4>
-          <p>이곳에 중립적인 여론 요약이 표시됩니다. 예: "해당 정책은 전문가들 사이에서도 의견이 분분합니다."</p>
+    <div className="App">
+      <Navbar bg="dark" data-bs-theme="dark">
+        <Container>
+          <Navbar.Brand href="#home">
+            <img
+              src="/Main_image.jpg"
+              width="50"
+              height="50"
+              alt="logo"
+            />
+            뉴스 및 여론 요약 서비스
+            </Navbar.Brand>
+          <Nav className="ms-auto">
+            <Nav.Link href="#주제1">주제1</Nav.Link>
+            <Nav.Link href="#주제2">주제2</Nav.Link>
+            <Nav.Link href="#주제3">주제3</Nav.Link>
+          </Nav>
+        </Container>
+      </Navbar>
+      <div className="container">
+        <div className='row'>
+          <div className='col-md-4'>1번주제</div>
+          <div className='col-md-4'>2번주제</div>
+          <div className='col-md-4'>3번주제</div>
         </div>
       </div>
     </div>
