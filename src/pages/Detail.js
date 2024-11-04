@@ -1,8 +1,8 @@
 function Detail() {
     return (
         <div>
-            <h1>Detail</h1>
-            <p>Detail 페이지 입니다.</p>
+            <h1>제목1</h1>
+            <p>주제1에 대한 요약내용</p>
         </div>
     )
 }
