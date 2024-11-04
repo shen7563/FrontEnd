@@ -14,7 +14,6 @@ let data = [
         title : "주제3",
         content : "주제3의 내용"
     }
-
 ]
 
 export default data;
