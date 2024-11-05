@@ -8,7 +8,7 @@ import axios from 'axios';
 
 function App() {
 
-  let [news_data] = useState(data);
+  let [newsdata] = useState(data);
   let navigate = useNavigate();
 
   return (
@@ -38,15 +38,15 @@ function App() {
           <div className="container">
             <div className='row'>
               {
-                news_data.map((a, i) => {
+                newsdata.map((a, i) => {
                   return (
-                    <Card news_data={news_data[i]}></Card>
+                    <Card newsdata={newsdata[i]}></Card>
                   )
                 })
               }
             </div>
           </div></div>} />
-        <Route path="/detail/:id" element={<Detail news_data={news_data} />} />
+        <Route path="/detail/:id" element={<Detail newsdata={newsdata} />} />
         <Route path="*" element={<div>Not Found</div>} />
       </Routes>
     </div>
@@ -57,11 +57,16 @@ function Card(props) {
   let navigate = useNavigate();
 
   return (
-    <div className='col-md-4'>
-      <h4 onClick={() => navigate(`/detail/${props.news_data.id}`)} style={{ cursor: 'pointer' }}>
-        {props.news_data.title}
+    <div className='col-md-12 card-container'>
+      <h4 onClick={() => navigate(`/detail/${props.newsdata.id}`)} style={{ cursor: 'pointer', marginRight: '10px' }}>
+        {props.newsdata.title}
       </h4>
-      <p>{props.news_data.content}</p>
+      <p className='content'>{props.newsdata.content}</p>
+      <img 
+        src={props.newsdata.image} 
+        alt={props.newsdata.title} 
+        className='image'
+      />
     </div>
   );
 }
