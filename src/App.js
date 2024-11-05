@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import './App.css';
-import { Navbar, Container, Nav } from 'react-bootstrap';
+import { Navbar, Container, Nav, Row, Col } from 'react-bootstrap';
+import Card from 'react-bootstrap/Card';
+import CardGroup from 'react-bootstrap/CardGroup';
 import data from './pages/data.js';
-import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
 import Detail from './pages/Detail.js';
-import axios from 'axios';
+
+import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
 
 function App() {
 
@@ -25,27 +27,39 @@ function App() {
             />
             뉴스 및 여론 요약 서비스
           </Navbar.Brand>
-          <Nav className="ms-auto">
+          <Nav className="me-auto">
             <Nav.Link onClick={() => { navigate('/') }}>home</Nav.Link>
-            <Nav.Link href="#주제2">주제2</Nav.Link>
-            <Nav.Link href="#주제3">주제3</Nav.Link>
+          </Nav>
+          <Nav className="ms-auto">
+            <Nav.Link href="#주제1">주제1</Nav.Link>
+            <Nav.Link href="#주제1">주제2</Nav.Link>
           </Nav>
         </Container>
       </Navbar>
-
       <Routes>
         <Route path="/" element={<div>
-          <div className="container">
-            <div className='row'>
+          <Container>
+            <Row className='justify-content-center'>
               {
-                newsdata.map((a, i) => {
-                  return (
-                    <Card newsdata={newsdata[i]}></Card>
-                  )
-                })
+                newsdata.map((item, index) => (
+                  <Col md={12} key={index} className='mb-4'>
+                    <Card className="text-center">
+                      <Card.Img variant="top" src={item.image} className="center-image" />
+                      <Card.Body>
+                        <Card.Title>{item.title}</Card.Title>
+                        <Card.Text>
+                          {item.content}
+                        </Card.Text>
+                      </Card.Body>
+                      <Card.Footer>
+                        <small className="text-muted">Last updated 3 mins ago</small>
+                      </Card.Footer>
+                    </Card>
+                  </Col>
+                ))
               }
-            </div>
-          </div></div>} />
+            </Row>
+          </Container></div>} />
         <Route path="/detail/:id" element={<Detail newsdata={newsdata} />} />
         <Route path="*" element={<div>Not Found</div>} />
       </Routes>
@@ -53,22 +67,5 @@ function App() {
   );
 }
 
-function Card(props) {
-  let navigate = useNavigate();
-
-  return (
-    <div className='col-md-12 card-container'>
-      <h4 onClick={() => navigate(`/detail/${props.newsdata.id}`)} style={{ cursor: 'pointer', marginRight: '10px' }}>
-        {props.newsdata.title}
-      </h4>
-      <p className='content'>{props.newsdata.content}</p>
-      <img 
-        src={props.newsdata.image} 
-        alt={props.newsdata.title} 
-        className='image'
-      />
-    </div>
-  );
-}
 
 export default App;
