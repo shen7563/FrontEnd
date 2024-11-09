@@ -19,7 +19,10 @@ function App() {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="ms-auto">
-              {/* 주제 개수만큼 반복할 수 있게 */}
+                <Nav.Link href="#주제1">주제1</Nav.Link>
+                <Nav.Link href="#주제2">주제2</Nav.Link>
+                <Nav.Link href="#주제3">주제3</Nav.Link>
+                <Nav.Link href="#주제4">주제4</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
