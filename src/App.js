@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import './App.css';
-import { Navbar, Container, Nav, Row, Col } from 'react-bootstrap';
+import { Navbar, Container, Nav, NavDropdown, Row, Col } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import CardGroup from 'react-bootstrap/CardGroup';
 import data from './pages/data.js';
 import Detail from './pages/Detail.js';
-
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
 
 function App() {
@@ -15,27 +14,17 @@ function App() {
 
   return (
     <div className="App">
-      <Navbar bg="dark" data-bs-theme="dark">
-        <Container>
-          <Navbar.Brand onClick={() => { navigate('/') }}
-            style={{ cursor: 'pointer' }}>
-            <img
-              src="/Main_image.jpg"
-              width="50"
-              height="50"
-              alt="logo"
-            />
-            뉴스 및 여론 요약 서비스
-          </Navbar.Brand>
-          <Nav className="me-auto">
-            <Nav.Link onClick={() => { navigate('/') }}>home</Nav.Link>
-          </Nav>
+      <Navbar collapseOnSelect expand="lg" data-bs-theme="dark" bg="dark" className="bg-body-tertiary">
+      <Container>
+        <Navbar.Brand as={Link} to="/">뉴스 및 여론 요약 서비스</Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link href="#주제1">주제1</Nav.Link>
-            <Nav.Link href="#주제1">주제2</Nav.Link>
+            {/* 주제 개수만큼 반복할 수 있게 */}
           </Nav>
-        </Container>
-      </Navbar>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
       <Routes>
         <Route path="/" element={<div>
           <Container>
@@ -46,7 +35,7 @@ function App() {
                     <Card className="text-center">
                       <Card.Img variant="top" src={item.image} className="center-image" />
                       <Card.Body>
-                        <Card.Title>{item.title}</Card.Title>
+                        <Card.Title onClick={() => {navigate(`/detail/${index}`)}} style={{cursor:'pointer'}}>{item.title}</Card.Title>
                         <Card.Text>
                           {item.content}
                         </Card.Text>

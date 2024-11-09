@@ -6,8 +6,8 @@ function Detail(props) {
 
     return (
         <div>
-            <h1>{props.news_data[id].title}</h1>
-            <p>{props.news_data[id].content}</p>
+            <h1>{props.newsdata[id].title}</h1>
+            <p>{props.newsdata[id].content}</p>
         </div>
     )
 }
