@@ -6,11 +6,14 @@ import Pagination from 'react-bootstrap/Pagination';
 import data from './pages/data.js';
 import Detail from './pages/Detail.js';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
+import Collapse from 'react-bootstrap/Collapse';
 
 function App() {
   let [newsdata] = useState(data);
   let [selectedTopic, setSelectedTopic] = useState(null);
   let [currentPage, setCurrentPage] = useState(1);
+  let [openStates, setOpenStates] = useState({});
   let navigate = useNavigate();
 
   const handleTopicClick = (topic) => {
@@ -21,6 +24,13 @@ function App() {
   const handleMainClick = () => {
     setSelectedTopic(null);
     setCurrentPage(1);
+  }
+
+  const handleToggle = (id) => {
+    setOpenStates(prevState => ({
+      ...prevState,
+      [id]: !prevState[id]
+    }));
   }
 
   const itemsPerPage = 10;
@@ -62,8 +72,17 @@ function App() {
                         <Card.Title onClick={() => { navigate(`/detail/${item.id}`) }} style={{ cursor: 'pointer' }}>{item.title}</Card.Title>
                         <Card.Text>
                           {item.content}
-                          <br></br>
-                          {item.opinion}
+                          <br />
+                          <Button onClick={() => handleToggle(item.id)}
+                            aria-controls={`example-collapse-text-${item.id}`}
+                            aria-expanded={openStates[item.id]}>
+                            의견보기
+                          </Button>
+                          <Collapse in={openStates[item.id]}>
+                            <div id={`example-collapse-text-${item.id}`}>
+                              {item.opinion}
+                            </div>
+                          </Collapse>
                         </Card.Text>
                       </Card.Body>
                     </Card>
