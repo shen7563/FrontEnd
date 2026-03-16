@@ -18,31 +18,53 @@ function App() {
   let navigate = useNavigate();
 
   const handleTopicClick = (topic) => {
-    setSelectedTopic(topic);
-    setCurrentPage(1);
+    setSelectedTopic(topic); // 주제를 선택하면 해당 주제의 뉴스만 보여줌
+    setItemsToShow(10); // 주제를 변경할 때 초기화
   }
 
   const handleMainClick = () => {
-    setSelectedTopic(null);
-    setCurrentPage(1);
+    setSelectedTopic(null); // 메인으로 돌아가면 모든 뉴스를 보여줌
+    setSearchQuery(''); // 메인으로 돌아가면 검색어 초기화
+    setSearchInput(''); // 메인으로 돌아가면 검색어 입력 초기화
+    setItemsToShow(10); // 메인으로 돌아갈 때 초기화
+    navigate('/');
   }
 
   const handleToggle = (id) => {
-    setOpenStates(prevState => ({
-      ...prevState,
-      [id]: !prevState[id]
+    setOpenStates(prevState => ({ // 펼침 상태를 토글
+      ...prevState, // 기존 상태를 복사
+      [id]: !prevState[id] // 해당 아이템의 펼침 상태를 반전
     }));
   }
 
-  const itemsPerPage = 10;
+  const handleSearch = () => {
+    if (searchInput.trim() === '') {
+      setSearchQuery(''); // 검색어가 없으면 검색어 초기화
+      return; // 검색어가 없으면 실행하지 않음
+    }
+    setLoading(true); // 검색 중에는 로딩 상태를 true로 변경
+    setSearchQuery(searchInput); // 검색어를 입력하면 해당 검색어가 포함된 뉴스만 보여줌
+  }
+
+  const handleDarkModeToggle = () => {
+    setDarkMode(prevMode => { // 다크 모드를 토글
+      const newMode = !prevMode; // 이전 모드의 반대로 변경
+      localStorage.setItem('darkMode', JSON.stringify(newMode)); // 다크 모드 상태를 로컬 스토리지에 저장
+      return newMode; // 변경된 모드를 반환
+    });
+  }
+
   const filteredNewsData = selectedTopic ? newsdata.filter(item => item.topic === selectedTopic) : newsdata;
-  const totalPages = Math.ceil(filteredNewsData.length / itemsPerPage);
-  const currentData = filteredNewsData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  // 검색어가 포함된 뉴스만 보여줌
+  const searchedNewsData = searchQuery ? filteredNewsData.filter(item => item.title.includes(searchQuery)) : filteredNewsData;
+  // 보여줄 아이템 수만큼 데이터를 자름
+  const currentData = searchedNewsData.slice(0, itemsToShow);
+  // 자른 데이터의 주제 목록을 만듦
 
-  const topics = [...new Set(data.map(item => item.topic))];
+  const topics = [...new Set(newsdata.map(item => item.topic))]; // 중복되지 않는 주제 목록을 만듦
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  const loadMore = () => {
+    setItemsToShow(prev => prev + 10); // 보여줄 아이템 수를 10개씩 더 보여줌
   }
 
   useEffect(() => {
@@ -60,71 +82,66 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <Navbar collapseOnSelect expand="lg" data-bs-theme="dark" bg="dark" className="bg-body-tertiary">
-        <Container>
-          <Navbar.Brand as={Link} to="/" onClick={handleMainClick}>뉴스 및 여론 요약 서비스</Navbar.Brand>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="ms-auto">
-              {topics.map((topic, index) => (
-                <Nav.Link key={index} onClick={() => handleTopicClick(topic)}>{topic}</Nav.Link>
-              ))}
-            </Nav>
-          </Navbar.Collapse>
+    <div className={`App ${darkMode ? 'dark-mode' : ''}`}>
+      <NavBar topics={topics} handleTopicClick={handleTopicClick} handleMainClick={handleMainClick} />
+
+      <Container className="my-3">
+        {!loading && !(location.pathname.includes('/detail')) && (
+          <SearchBar
+            searchInput={searchInput}
+            setSearchInput={setSearchInput}
+            handleSearch={handleSearch}
+            darkMode={darkMode}
+            handleDarkModeToggle={handleDarkModeToggle}
+          />
+        )}
+      </Container>
+
+      {loading ? (
+        <Container className="text-center my-5">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
         </Container>
-      </Navbar>
-      <Routes>
-        <Route path="/" element={
-          <div>
-            <Container>
-              <Row xs={1} md={2} className="g-4">
-                {currentData.map((item, index) => (
-                  <Col key={index}>
-                    <Card>
-                      <Card.Img variant="top" src={item.image} style={{ width: '100px', height: '100px', objectFit: 'cover', margin: '0 auto' }} />
-                      <Card.Body>
-                        <Card.Title onClick={() => { navigate(`/detail/${item.id}`) }} style={{ cursor: 'pointer' }}>{item.title}</Card.Title>
-                        <Card.Text>
-                          {item.content}
-                          <br />
-                          <Button onClick={() => handleToggle(item.id)}
-                            aria-controls={`example-collapse-text-${item.id}`}
-                            aria-expanded={openStates[item.id]}>
-                            의견보기
-                          </Button>
-                          <Collapse in={openStates[item.id]}>
-                            <div id={`example-collapse-text-${item.id}`}>
-                              {item.opinion}
-                            </div>
-                          </Collapse>
-                        </Card.Text>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-              <Row>
-                <Col className="d-flex justify-content-center">
-                  <Pagination>
-                    <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
-                    <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-                    {[...Array(totalPages)].map((_, pageIndex) => (
-                      <Pagination.Item key={pageIndex + 1} active={pageIndex + 1 === currentPage} onClick={() => handlePageChange(pageIndex + 1)}>
-                        {pageIndex + 1}
-                      </Pagination.Item>
-                    ))}
-                    <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-                    <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
-                  </Pagination>
-                </Col>
-              </Row>
-            </Container>
-          </div>
-        } />
-        <Route path="/detail/:id" element={<Detail newsdata={newsdata} />} />
-        <Route path="*" element={<h1>Not Found</h1>} />
-      </Routes>
+      ) : (
+        <Routes>
+          <Route path="/" element={
+            <div>
+              <Container>
+                <Row xs={1} md={2} className="g-4">
+                  {currentData.length > 0 ? (
+                    currentData.map((item, index) => (
+                      <NewsCard key={index} item={item} openStates={openStates} handleToggle={handleToggle} />
+                    ))
+                  ) : (
+                    <div className="text-center w-100">검색결과가 없습니다</div>
+                  )}
+                </Row>
+                <div ref={loader} />
+              </Container>
+            </div>
+          } />
+          <Route path="/detail/:id" element={<Detail newsdata={newsdata} darkMode={darkMode} />} />
+          <Route path="/bookmarks" element={<Bookmark darkMode={darkMode} />} />
+          <Route path="/topic/:topicName" element={
+            <div>
+              <Container>
+                <Row xs={1} md={2} className="g-4">
+                  {searchedNewsData.length > 0 ? (
+                    searchedNewsData.map((item, index) => (
+                      <NewsCard key={index} item={item} openStates={openStates} handleToggle={handleToggle} />
+                    ))
+                  ) : (
+                    <div className="text-center w-100">선택한 주제의 뉴스가 없습니다</div>
+                  )}
+                </Row>
+                <div ref={loader} />
+              </Container>
+            </div>
+          } />
+          <Route path="*" element={<div>Not Found</div>} />
+        </Routes>
+      )}
     </div>
   );
 }
